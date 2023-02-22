@@ -1,6 +1,6 @@
 <template>
-    <form @submit.prevent="createUser()">
-        <a-card title="Create User" style="width: 100%;">
+    <form @submit.prevent="">
+        <a-card title="Edit User" style="width: 100%;">
             <div class="row mb-3">
                 <div class="col-12 col-sm-4">
                     <div class="row">
@@ -143,6 +143,17 @@
 
                     <div class="row mb-3">
                         <div class="col-12 col-sm-3 text-start text-sm-end">
+                            
+                        </div>
+                        <div class="col-12 col-sm-5">
+                            <a-checkbox v-model:checked="change_password">
+                                Change password
+                            </a-checkbox>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3" v-if="change_password === true">
+                        <div class="col-12 col-sm-3 text-start text-sm-end">
                             <label for="">
                                 <span class="text-danger me-1">*</span>
                                 <span :class="{
@@ -164,7 +175,7 @@
                         </div>
                     </div>
 
-                    <div class="row mb-3">
+                    <div class="row mb-3" v-if="change_password === true">
                         <div class="col-12 col-sm-3 text-start text-sm-end">
                             <label for="">
                                 <span class="text-danger me-1">*</span>
@@ -173,6 +184,28 @@
                         </div>
                         <div class="col-12 col-sm-5">
                             <a-input-password placeholder="Confirm Password" allow-clear v-model:value="password_confirmation"/>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3" >
+                        <div class="col-12 col-sm-3 text-start text-sm-end">
+                            <label for="">
+                                <span>Last login at:</span>
+                            </label>
+                        </div>
+                        <div class="col-12 col-sm-5">
+                            <span>{{ login_at }}</span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3" >
+                        <div class="col-12 col-sm-3 text-start text-sm-end">
+                            <label for="">
+                                <span>Last changed password at:</span>
+                            </label>
+                        </div>
+                        <div class="col-12 col-sm-5">
+                            <span>{{ change_password_at }}</span>
                         </div>
                     </div>
                 </div>
@@ -215,49 +248,21 @@ export default defineComponent({
             password_confirmation: "",
             department_id: [],
             status_id: [],
+            change_password: false,
+            login_at: "",
+            change_password_at: ""
         });
 
         const errors = ref({});
-
-        const getUserCreate = () => {
-            axios.get("http://127.0.0.1:8000/api/users/create")
-                .then((response) => {
-                    users_status.value = response.data.users_status;
-                    departments.value = response.data.department;
-
-                })
-                .catch((error) => {
-                    console.log(error)
-                })
-        }
 
         const filterOption = (input, option) => {
             return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
         }
 
-        const createUser = () => {
-            axios.post("http://127.0.0.1:8000/api/users", users, {
-            headers: { "Access-Control-Allow-Origin": "*" }
-            })
-            .then((response) => {
-                if(response) {
-                    message.success("Create user success");
-                    router.push({ name: 'admin-users'});
-                }
-            })
-            .catch((error) => {
-                console.log(error)
-                errors.value = error.response.data.errors;
-            })
-        }
-
-        getUserCreate();
-
         return {
             users_status,
             departments,
             filterOption,
-            createUser,
             ...toRefs(users),
             errors
         }

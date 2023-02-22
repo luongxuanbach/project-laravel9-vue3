@@ -12,7 +12,8 @@ import {
      Table,
      Select,
      Input,
-     InputPassword
+     InputPassword,
+     Checkbox
 } from 'ant-design-vue';
 import { createPinia } from 'pinia';
 import axios from 'axios';
@@ -38,6 +39,7 @@ app.use(Avatar);
 app.use(Select);
 app.use(Input);
 app.use(InputPassword);
+app.use(Checkbox);
 app.mount('#app');
 
 app.config.globalProperties.$message = message;
